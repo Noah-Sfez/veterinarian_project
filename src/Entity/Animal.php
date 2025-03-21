@@ -26,7 +26,6 @@ use ApiPlatform\Metadata\Delete;
     ),
     new Post(
         security: "is_granted('ROLE_ASSISTANT')",
-        processor: UserPasswordHasherProcessor::class,
         securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à enregistrer un nouvel animal.'
     ),
     new Get(
@@ -34,7 +33,6 @@ use ApiPlatform\Metadata\Delete;
         securityMessage: 'Accès refusé : vous ne pouvez pas consulter cet animal.'
     ),
     new Patch(
-        processor: UserPasswordHasherProcessor::class,
         security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
         securityMessage: 'Accès refusé : vous ne pouvez pas modifier cet animal.'
     ),

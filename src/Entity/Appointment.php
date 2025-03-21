@@ -22,7 +22,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'statut' => 'partial'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'statut' => 'exact', 'isPaid' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['createdDate'])]
 
 #[ApiResource(

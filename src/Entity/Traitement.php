@@ -14,7 +14,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
-use App\State\UserPasswordHasherProcessor;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
@@ -26,7 +25,6 @@ use App\State\UserPasswordHasherProcessor;
     ),
     new Post(
         security: "is_granted('ROLE_VETERINARIAN')",
-        processor: UserPasswordHasherProcessor::class,
         securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à enregistrer un nouveau traitement.'
     ),
     new Get(
@@ -34,7 +32,6 @@ use App\State\UserPasswordHasherProcessor;
         securityMessage: 'Accès refusé : vous ne pouvez pas consulter ce traitement.'
     ),
     new Patch(
-        processor: UserPasswordHasherProcessor::class,
         security: "is_granted('ROLE_VETERINARIAN') or object.owner == user",
         securityMessage: 'Accès refusé : vous ne pouvez pas modifier ce traitement.'
     ),

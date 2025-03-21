@@ -13,7 +13,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
-use App\State\UserPasswordHasherProcessor;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
@@ -25,7 +24,6 @@ use App\State\UserPasswordHasherProcessor;
     ),
     new Post(
         security: "is_granted('ROLE_DIRECTOR')",
-        processor: UserPasswordHasherProcessor::class,
         securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à enregistrer un nouveau client.'
     ),
     new Get(
@@ -33,7 +31,6 @@ use App\State\UserPasswordHasherProcessor;
         securityMessage: 'Accès refusé : vous ne pouvez pas consulter ce client.'
     ),
     new Patch(
-        processor: UserPasswordHasherProcessor::class,
         security: "is_granted('ROLE_DIRECTOR') or object == user",
         securityMessage: 'Accès refusé : vous ne pouvez pas modifier ce client.'
     ),
