@@ -9,6 +9,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Attribute\Groups;
+use App\Enum\AppointmentStatus;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
@@ -16,8 +19,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
-use App\State\UserPasswordHasherProcessor;
 
+#[ApiFilter(DateFilter::class, properties: ['createdDate'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
@@ -28,7 +31,6 @@ use App\State\UserPasswordHasherProcessor;
     ),
     new Post(
         security: "is_granted('ROLE_ASSISTANT')",
-        processor: UserPasswordHasherProcessor::class,
         securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à créer un rendez-vous.'
     ),
     new Get(
@@ -36,10 +38,11 @@ use App\State\UserPasswordHasherProcessor;
         securityMessage: 'Accès refusé : vous ne pouvez pas consulter cet rendez-vous.'
     ),
     new Patch(
-        processor: UserPasswordHasherProcessor::class,
-        security: "is_granted('ROLE_ASSISTANT') or is_granted('ROLE_VETERINARIAN') or object == user",
-        securityMessage: 'Accès refusé : vous ne pouvez pas modifier cet rendez-vous.'
+        security: "(is_granted('ROLE_ASSISTANT') or is_granted('ROLE_VETERINARIAN') or object == user) and object.isModifiable()",
+        securityMessage: 'Accès refusé : vous ne pouvez pas modifier un rendez-vous terminé.'
     ),
+
+
     new Delete(
         security: "is_granted('ROLE_DIRECTOR') or object == user",
         securityMessage: 'Accès refusé : vous ne pouvez pas supprimer cet rendez-vous.'
@@ -58,7 +61,7 @@ class Appointment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(groups: 'read')]
+    #[Groups(['read'])]
     private ?\DateTimeInterface $createdDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -84,9 +87,9 @@ class Appointment
     #[Groups(groups: ['read', 'write'])]
     private ?User $veterinarian = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', enumType: AppointmentStatus::class, length: 20)]
     #[Groups(groups: ['read', 'write'])]
-    private ?string $statut = null;
+    private ?AppointmentStatus $statut = null;
 
     /**
      * @var Collection<int, Traitement>
@@ -97,9 +100,11 @@ class Appointment
     public function __construct()
     {
         $this->traitement = new ArrayCollection();
+        $this->createdDate = new \DateTime(
+            'now',
+            new \DateTimeZone('Europe/Paris')
+        );
     }
-
-
 
     public function getId(): ?int
     {
@@ -178,15 +183,14 @@ class Appointment
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): ?AppointmentStatus
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(AppointmentStatus $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -213,4 +217,10 @@ class Appointment
 
         return $this;
     }
+
+    public function isModifiable(): bool
+    {
+        return $this->statut !== AppointmentStatus::TERMINE;
+    }
+
 }
