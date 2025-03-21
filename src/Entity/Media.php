@@ -19,12 +19,30 @@ use App\State\UserPasswordHasherProcessor;
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
     operations: [
-        new GetCollection(security: "is_granted('ROLE_DIRECTOR')", securityMessage: 'You are not allowed to get users'),
-        new Post(security: "is_granted('ROLE_DIRECTOR')", processor: UserPasswordHasherProcessor::class , securityMessage: 'You are not allowed to post users'),
-        new Get(security: "is_granted('ROLE_DIRECTOR') or object == user", securityMessage: 'You are not allowed to get this user'),
-        new Patch(processor: UserPasswordHasherProcessor::class, security: "is_granted('ROLE_DIRECTOR') or object == user", securityMessage: 'You are not allowed to edit this user'),
-        new Delete(security: "is_granted('ROLE_DIRECTOR') or object == user", securityMessage: 'You are not allowed to delete this user'),
-    ],
+    new GetCollection(
+        security: "is_granted('ROLE_DIRECTOR')",
+        securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à consulter la liste des médias.'
+    ),
+    new Post(
+        security: "is_granted('ROLE_DIRECTOR')",
+        processor: UserPasswordHasherProcessor::class,
+        securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à ajouter un média.'
+    ),
+    new Get(
+        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
+        securityMessage: 'Accès refusé : vous ne pouvez pas consulter ce média.'
+    ),
+    new Patch(
+        processor: UserPasswordHasherProcessor::class,
+        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
+        securityMessage: 'Accès refusé : vous ne pouvez pas modifier ce média.'
+    ),
+    new Delete(
+        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
+        securityMessage: 'Accès refusé : vous ne pouvez pas supprimer ce média.'
+    ),
+],
+
 )]
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
