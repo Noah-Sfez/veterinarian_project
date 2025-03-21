@@ -56,7 +56,7 @@ The Veterinarian Project includes advanced search capabilities to help you quick
     *(true = 1; false = 0)*
 
 ## 📬 API Usage  
-You can use all available routes via the **Postman collection** named **"Veterinarian Project"** provided at the root of the project.  
+You can use all available routes via the **Postman collection** named **"Veterinarian Project.postman_collection.json"** provided at the root of the project.  
 Import it into Postman and you're ready to go! 🎉
 
 ## 👥 Project Members
