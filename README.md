@@ -7,7 +7,6 @@ The **Veterinarian Project** is a web application designed to streamline veterin
 - **Patient Records**: Keep detailed information for each animal patient.
 - **Appointments**: Easily schedule, update, and track appointments.
 - **Billing**: Manage billing and payments with ease.
-- **Reports**: Generate insightful reports to monitor and improve clinic performance.
 
 ## ⚙️ Installation
 1. Clone the repository:
