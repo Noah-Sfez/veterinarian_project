@@ -45,8 +45,6 @@ use ApiPlatform\Metadata\Delete;
         security: "(is_granted('ROLE_ASSISTANT') or is_granted('ROLE_VETERINARIAN') or object == user) and object.isModifiable()",
         securityMessage: 'Accès refusé : vous ne pouvez pas modifier un rendez-vous terminé.'
     ),
-
-
     new Delete(
         security: "is_granted('ROLE_DIRECTOR') or object == user",
         securityMessage: 'Accès refusé : vous ne pouvez pas supprimer cet rendez-vous.'
@@ -76,6 +74,10 @@ class Appointment
     #[Groups(groups: ['read', 'write'])]
     private ?string $motif = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(groups: ['read', 'write'])]
+    private ?bool $isPaid = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(groups: ['read', 'write'])]
@@ -99,6 +101,7 @@ class Appointment
      * @var Collection<int, Traitement>
      */
     #[ORM\ManyToMany(targetEntity: Traitement::class)]
+    #[Groups(groups: ['read', 'write'])]
     private Collection $traitement;
 
     public function __construct()
@@ -225,6 +228,18 @@ class Appointment
     public function isModifiable(): bool
     {
         return $this->statut !== AppointmentStatus::TERMINE;
+    }
+
+    public function getIsPaid(): ?bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(bool $isPaid): static
+    {
+        $this->isPaid = $isPaid;
+
+        return $this;
     }
 
 }
