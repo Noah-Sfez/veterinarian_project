@@ -1075,6 +1075,57 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Appointment Only One",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NDI1NjExOTAsImV4cCI6MTc0MjU2NDc5MCwicm9sZXMiOlsiUk9MRV9BU1NJU1RBTlQiLCJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiJsZW90Z0BnbWFpbC5jb20ifQ.IiRRPMGc7SiDsjInkeXyM8F_h5JYvpP4QJT_KlbfWEtpbnKiAB-6TTYiRLS0t8WnSakw27xuFsnTK4kbpw1FcvHSNhVVVpyaDM34I-jAEYHnnQRF8Z9ggOeVJP2VnAlSdWiXFvlIjfJjPr4mQwRGSCD5EC4mMwMVi8HP1h_gVOHFj15VR9P9tem2FGtn1y6i2LSvRSSoAmGA8Qh6_LUjCsVG4AeVxvubnwwUmwx4wphqx_pIb_ScJqkqn8T1OELn4lo69PDUfnX9qSGFdAjyLbYGNyfNLODVmcGdsCp_xV0840C41dTWZdhyLyximf8amyUyvE3w9FFGbYStan1c2Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"createdDate\": \"2025-03-21T08:36:36.543Z\",\r\n  \"appointmentDate\": \"2025-03-21T08:36:36.543Z\",\r\n  \"motif\": \"toto\",\r\n  \"animal\": \"/api/animals/1\",\r\n  \"assistant\": \"/api/users/3\",\r\n  \"veterinarian\": \"/api/users/2\",\r\n  \"statut\": \"programmé\",\r\n  \"traitement\": [\r\n    \"/api/traitements/1\"\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://127.0.0.1:8000/api/appointments?isPaid=1",
+							"protocol": "https",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"appointments"
+							],
+							"query": [
+								{
+									"key": "isPaid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
