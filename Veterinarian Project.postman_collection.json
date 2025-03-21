@@ -847,7 +847,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://127.0.0.1:8000/api/appointments?createdDate[after]=2025-03-21T00:00:00&createdDate[before]=2025-03-21T23:59:59",
+							"raw": "https://127.0.0.1:8000/api/appointments?appointmentDate[after]=2025-03-21T00:00:00&appointmentDate[before]=2025-03-21T23:59:59",
 							"protocol": "https",
 							"host": [
 								"127",
@@ -862,11 +862,11 @@
 							],
 							"query": [
 								{
-									"key": "createdDate[after]",
+									"key": "appointmentDate[after]",
 									"value": "2025-03-21T00:00:00"
 								},
 								{
-									"key": "createdDate[before]",
+									"key": "appointmentDate[before]",
 									"value": "2025-03-21T23:59:59"
 								}
 							]
@@ -902,7 +902,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://127.0.0.1:8000/api/appointments?createdDate[after]=2000-01-01&createdDate[strictly_before]=2000-01-02",
+							"raw": "https://127.0.0.1:8000/api/appointments?appointmentDate[after]=2000-01-01&appointmentDate[strictly_before]=2000-01-02",
 							"protocol": "https",
 							"host": [
 								"127",
@@ -917,11 +917,11 @@
 							],
 							"query": [
 								{
-									"key": "createdDate[after]",
+									"key": "appointmentDate[after]",
 									"value": "2000-01-01"
 								},
 								{
-									"key": "createdDate[strictly_before]",
+									"key": "appointmentDate[strictly_before]",
 									"value": "2000-01-02"
 								}
 							]
