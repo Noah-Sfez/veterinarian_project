@@ -4,45 +4,51 @@ namespace App\Entity;
 
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Metadata\ApiResource;
-use Symfony\Component\Serializer\Attribute\Groups;
 
+use ApiPlatform\OpenApi\Model;
+use ApiPlatform\Metadata\ApiProperty;
+use App\Controller\CreateMediaObjectAction;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
-use App\State\UserPasswordHasherProcessor;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\Groups;
+ 
+#[Vich\Uploadable]
 #[ApiResource(
     normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    types: ['https://schema.org/MediaObject'],
     operations: [
-    new GetCollection(
-        security: "is_granted('ROLE_DIRECTOR')",
-        securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à consulter la liste des médias.'
-    ),
-    new Post(
-        security: "is_granted('ROLE_DIRECTOR')",
-        processor: UserPasswordHasherProcessor::class,
-        securityMessage: 'Accès refusé : vous n\'êtes pas autorisé à ajouter un média.'
-    ),
-    new Get(
-        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
-        securityMessage: 'Accès refusé : vous ne pouvez pas consulter ce média.'
-    ),
-    new Patch(
-        processor: UserPasswordHasherProcessor::class,
-        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
-        securityMessage: 'Accès refusé : vous ne pouvez pas modifier ce média.'
-    ),
-    new Delete(
-        security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
-        securityMessage: 'Accès refusé : vous ne pouvez pas supprimer ce média.'
-    ),
-],
-
+        new Get(),
+        new GetCollection(),
+        new Delete(),
+        new Post(
+            controller: CreateMediaObjectAction::class,
+            deserialize: false,
+            validationContext: ['groups' => ['Default', 'write']],
+            openapi: new Model\Operation(
+                requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ])
+                )
+            )
+        )
+    ]
 )]
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
@@ -51,12 +57,22 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(groups: 'read')]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(groups: ['read', 'write'])]
     private ?string $filePath = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Animal $animal = null;
+
+    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    #[Groups(['read'])]
+    public ?string $contentUrl = null;
+ 
+    #[Vich\UploadableField(mapping: 'media_object', fileNameProperty: 'filePath')]
+    #[Assert\NotNull(groups: ['write'])]
+    public ?File $file = null;
 
     public function getId(): ?int
     {
@@ -71,6 +87,18 @@ class Media
     public function setFilePath(?string $filePath): static
     {
         $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    public function getAnimal(): ?Animal
+    {
+        return $this->animal;
+    }
+
+    public function setAnimal(?Animal $animal): static
+    {
+        $this->animal = $animal;
 
         return $this;
     }
