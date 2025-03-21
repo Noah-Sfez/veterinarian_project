@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
 
+#[ApiResource()]
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 class Client
 {
